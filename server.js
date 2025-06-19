@@ -19,9 +19,8 @@ connectDB()
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://front-xi-bay.vercel.app',
+  origin: '*', // Allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, 
 }));
 
 app.use("/api/auth", authRoutes);
