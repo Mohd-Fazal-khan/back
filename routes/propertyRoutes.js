@@ -55,7 +55,7 @@ router.get("/my-properties", authMiddleware, async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const properties = await Property.find();
-    console.log('Properties found:', properties); // Add this logging
+    console.log('Properties found:', properties); 
     res.json(properties);
   } catch (error) {
     console.error('Server error:', error);
@@ -63,7 +63,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// GET: Fetch single property by ID
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -91,9 +91,6 @@ router.delete('/del/:id',async (req,res)=>{
  });
 
 
- // GET /api/properties/available?location=Delhi&checkIn=2025-06-25&checkOut=2025-06-28&guests=3
-
-// backend/routes/property.js
 
 router.post('/filter', async (req, res) => {
   const { location, checkIn, checkOut, guests } = req.body;
@@ -101,25 +98,22 @@ router.post('/filter', async (req, res) => {
   try {
     const query = {};
 
-    // Filter by location (case-insensitive)
     if (location) {
       query.location = { $regex: location, $options: "i" };
     }
 
-    // Filter by guests
+
     if (guests) {
-      query.maxGuests = { $gte: guests }; // assuming you store maxGuests in DB
+      query.maxGuests = { $gte: guests }; 
     }
 
-    // Optional: Filter by availability if you store booked dates
-    // You must have a `bookedDates` array in your property model for this
     if (checkIn && checkOut) {
       const inDate = new Date(checkIn);
       const outDate = new Date(checkOut);
 
       query.$or = [
-        { bookedDates: { $exists: false } }, // available if no bookings
-        { bookedDates: { $not: { $elemMatch: { $gte: inDate, $lte: outDate } } } } // no conflict
+        { bookedDates: { $exists: false } }, 
+        { bookedDates: { $not: { $elemMatch: { $gte: inDate, $lte: outDate } } } } 
       ];
     }
 
@@ -153,28 +147,27 @@ router.put(
       const property = await Property.findById(propertyId);
       if (!property) return res.status(404).json({ message: "Property not found" });
 
-      // Collect uploaded images
+    
       const newImages = [];
 
-      // Handle main image
+   
       if (req.files.mainImage) {
         newImages.push("uploads/" + req.files.mainImage[0].filename);
       } else if (property.images.length > 0) {
-        // If no new main image, keep old one
+      
         newImages.push(property.images[0]);
       }
 
-      // Handle other images
       if (req.files.otherImages && req.files.otherImages.length > 0) {
         req.files.otherImages.forEach((file) => {
           newImages.push("uploads/" + file.filename);
         });
       } else {
-        // If no new other images, keep old ones (excluding the first which is main)
+       
         newImages.push(...property.images.slice(1));
       }
 
-      // Update property fields
+   
       property.title = title;
       property.location = location;
       property.propertytype = propertytype;
@@ -192,32 +185,5 @@ router.put(
     }
   }
 );
-
-
-
-
-
-// Add this route handler
-// router.get('/my', authMiddleware, async (req, res) => {
-//   try {
-//     const properties = await Property.find({ host: req.userId });
-//     res.json(properties);
-//   } catch (error) {
-//     console.error('Error fetching user properties:', error);
-//     res.status(500).json({ message: 'Failed to fetch properties' });
-//   }
-// });
-
-// router.get('/host', authMiddleware, async (req, res) => {
-//   try {
-//     const properties = await Property.find({ host: req.userId});
-//     res.json(properties);
-//   } catch (error) {
-//     console.error('Error fetching host properties:', error);
-//     res.status(500).json({ message: 'Failed to fetch properties' });
-//   }
-// });
-
-
 
 export default router;

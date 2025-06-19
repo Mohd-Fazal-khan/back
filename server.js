@@ -13,20 +13,20 @@ dotenv.config();
 
 const app = express();
 
-// Connect to MongoDB
+
 connectDB()
-// Middleware
+
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://front-xi-bay.vercel.app', // ✅ your frontend URL
+  origin: 'https://front-xi-bay.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true, // if you're using cookies or auth headers
+  credentials: true, 
 }));
-// Routes here...
+
 app.use("/api/auth", authRoutes);
 app.use("/api/properties", propertyRoutes);
-app.use("/api/bookings", bookingRoutes); // Add this line
+app.use("/api/bookings", bookingRoutes); 
 app.use("/api", stripe);
 
 

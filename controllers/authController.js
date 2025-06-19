@@ -1,29 +1,29 @@
-// controllers/authController.js
+
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-// Generate JWT Token
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
-// @route   POST /api/auth/signup
+
 export const signup = async (req, res) => {
   const { name, email, password, isHost } = req.body;
 
   try {
-    // Check if user exists
+ 
     const existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "User already exists" });
 
-    // Hash password
+ 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+
     const user = await User.create({
       name,
       email,
@@ -43,16 +43,15 @@ export const signup = async (req, res) => {
   }
 };
 
-// @route   POST /api/auth/login
+
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Find user
+ 
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
@@ -81,7 +80,7 @@ export const authMiddleware = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id; // Attach userId to request
+    req.userId = decoded.id; 
     next();
   } catch (error) {
     res.status(401).json({ message: "Invalid token" });
