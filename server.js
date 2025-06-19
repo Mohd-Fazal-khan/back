@@ -19,7 +19,7 @@ connectDB()
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://front-xi-bay.vercel.app',
+  origin: 'https://front-sage-six.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true, 
 }));
